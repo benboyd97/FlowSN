@@ -4,7 +4,9 @@ Code from Boyd et al. (2026)
 
 ## Simple Model Code Overview
 
-Conda Dependencies (`environment.yml`)
+Conda dependencies in `environment.yml`
+
+---
 
 ### 1. Data Generation (`simple_model/generate_data.py`)
 Generates 20 million synthetic supernovae using a mixture of priors and saves them as a single, contiguous `.npy` file.
@@ -59,7 +61,7 @@ Computes the log-likelihood of new supernova observations.
     2. Chains saved in `simple_model/chains/sn_model_cmb_flow_chains/l5.npz`
 
 
-
+---
 
 ## SNANA Experiments
 
