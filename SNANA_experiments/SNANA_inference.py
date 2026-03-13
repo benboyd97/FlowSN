@@ -320,7 +320,7 @@ from numpyro.distributions.truncated import TruncatedDistribution
 
 
 
-def flow_model_flat(z_s,z_s_err,z_hel,data_s=None,data_err_s=None,h=H0/100,m_cut=24,sigma_cut=0.25,a=-0.1,b=-1,dust=False,sigma_pec=300,wCDM=True, R_cmb_obs= R_cmb_obs,sigma_Rcmb=sigma_Rcmb):
+def flow_model(z_s,z_s_err,z_hel,data_s=None,data_err_s=None,h=H0/100,m_cut=24,sigma_cut=0.25,a=-0.1,b=-1,sigma_pec=300,wCDM=True, R_cmb_obs= R_cmb_obs,sigma_Rcmb=sigma_Rcmb):
 
  
     if wCDM:
@@ -487,7 +487,7 @@ for add in these:
 
     init_dict={'w':-0.9,'Om0':0.3,'Omde':0.65,'M0':-19.36,'alpha':-0.12,'beta':3.,'eps':jnp.zeros(len(z_hel))}
 
-    nuts_kernel = NUTS(flow_model_flat,adapt_step_size=True,max_tree_depth=7,init_strategy=init_to_value(values=init_dict))                                                                                                   
+    nuts_kernel = NUTS(flow_model,adapt_step_size=True,max_tree_depth=7,init_strategy=init_to_value(values=init_dict))                                                                                                   
 
     mcmc = MCMC(nuts_kernel, num_samples=500, num_warmup=500,num_chains=4)
     rng_key = random.PRNGKey(0)
