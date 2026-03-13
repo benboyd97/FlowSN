@@ -25,7 +25,7 @@ Trains a `MaskedAutoregressiveFlow` on the residuals. It applies a physical log-
 * **Key Features:**
     * **Standardszation:** Automatically saves `simple_model/scalings/model_std.npz` (contains $\mu$ and $\sigma$ for scaling).
     - Baseline$ (using columns 3–5).
-    * **Training Weights:** Automatically saves `simple_model/weights/sn_model_std.eqx` (saves training weights).
+    * **Training Weights:** Automatically saves `simple_model/weights/sn_model_weights.eqx` (saves training weights).
 
 ---
 
