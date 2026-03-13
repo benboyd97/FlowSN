@@ -357,10 +357,10 @@ def flow_model_flat(z_s,z_s_err,z_hel,data_s=None,data_err_s=None,h=H0/100,m_cut
 
         if wCDM:
             d__ = wcosmo.FlatwCDM(H0, Om0, w).comoving_distance(z)
-            mu=5*jnp.log10(d__*(1+zpec)*(1+zhel)*(1+z)*1e6/10)
+            mu=5*jnp.log10(d__*(1+zpec)**2*(1+zhel)*(1+z)*1e6/10)
         else:
             d__=background.transverse_comoving_distance(cosmo_jax, 1/(1+z))
-            mu=5*jnp.log10((1+zpec)*(1+zhel)*(1+z)/h*d__*1e6/10)
+            mu=5*jnp.log10((1+zpec)**2*(1+zhel)*(1+z)/h*d__*1e6/10)
             mu = mu[0]
     
         return mu
@@ -399,7 +399,10 @@ def flow_model_flat(z_s,z_s_err,z_hel,data_s=None,data_err_s=None,h=H0/100,m_cut
         err1 = mu_grad_vmap(z_s,jnp.zeros(n_sne),z_hel)*z_s_err
         err2 = mu_vpec_grad_vmap(z_s,jnp.zeros(n_sne),z_hel)*sigma_pec/299792.458
 
-        eps= numpyro.sample('eps',dist.Normal(jnp.zeros(n_sne),jnp.sqrt(err1**2+err2**2)))
+        cov =  mu_grad_vmap(z_s,jnp.zeros(n_sne),z_hel)*mu_vpec_grad_vmap(z_s,jnp.zeros(n_sne),z_hel)*(sigma_pec/299792.458)**2
+
+
+        eps= numpyro.sample('eps',dist.Normal(jnp.zeros(n_sne),jnp.sqrt(err1**2+err2**2-2*cov)))
        
         alpha= jnp.repeat(alpha,n_sne)
         
