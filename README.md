@@ -1,10 +1,10 @@
 # FlowSN: Neural Simulation-Based Inference under Realistic Selection Effects applied to Supernova Cosmology
 
-Code from Boyd et al. (2026).
+Code from Boyd et al. (2026) 
 
-## Conda Dependencies (`environment.yml  `)
+## Simple Model Code Overview
 
-## Simple Model Overview
+Conda Dependencies (`environment.yml`)
 
 ### 1. Data Generation (`simple_model/generate_data.py`)
 Generates 20 million synthetic supernovae using a mixture of priors and saves them as a single, contiguous `.npy` file.
