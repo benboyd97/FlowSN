@@ -1,6 +1,6 @@
 # FlowSN: Neural Simulation-Based Inference under Realistic Selection Effects applied to Supernova Cosmology
 
-Code from Boyd et al. (2026).
+Code from [Boyd et al. (2026)](https://arxiv.org/abs/2603.11165).
 
 ## Simple Model Code Overview
 
