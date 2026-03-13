@@ -14,7 +14,6 @@ Generates 20 million synthetic supernovae using a mixture of priors and saves th
 * **Data Structure:** 18 columns total: [Observed $m, c, x$ (3 cols)] + [Latent parameters/errors (15 cols)].
 
 
-
 ---
 
 ### 2. Training (`simple_model/train.py`)
@@ -26,7 +25,7 @@ Trains a `MaskedAutoregressiveFlow` on the residuals. It applies a physical log-
     - Baseline$ (using columns 3–5).
     * **Training Weights:** Automatically saves `simple_model/weights/sn_model_std.eqx` (saves training weights).
 
-
+---
 
 ### 3. Inference (`simple_model/inference.py`)
 Computes the log-likelihood of new supernova observations.
