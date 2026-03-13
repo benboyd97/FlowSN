@@ -9,12 +9,11 @@ parser.add_argument("--name", type=str,default='base_name')
 parser.add_argument("--nn_width", type=int,default=32)
 parser.add_argument("--nn_depth", type=int,default=2)
 parser.add_argument("--no_flows", type=int,default=4)
-parser.add_argument("--max_pat", type=int,default=5)
+parser.add_argument("--max_pat", type=int,default=10)
 parser.add_argument("--val_prop", type=float,default=0.1)
-parser.add_argument("--batch_size", type=int,default=1024)
-parser.add_argument("--epochs", type=int,default=10000)
+parser.add_argument("--batch_size", type=int,default=8092)
+parser.add_argument("--epochs", type=int,default=10)
 parser.add_argument('--save_all', action='store_true', help='save old model versions')
-parser.add_argument('--make_slurm', action='store_true', help='run_slurm')
 
 args = parser.parse_args()
 save_all = args.save_all
@@ -29,7 +28,7 @@ if name =='base_name':
 
 std_norm = True
 restart=False
-batch_samps = 5000000
+batch_samps = 10_000_000
 import jax
 jax.config.update('jax_enable_x64',True)
 import jax.random as random
@@ -123,7 +122,7 @@ from numpyro.infer import MCMC, NUTS
 
 safe_log = lambda x: jnp.log(jnp.clip(x, a_min=1e-8, a_max=None))
 
-X_load=onp.load('SNANA_5M_training_set.npy')
+X_load=onp.load('SNANA_training_set.npy')
 z_hel = X_load[:,0]
 z_hd = X_load[:,1]
 z_hd_err = X_load[:,2]
@@ -159,7 +158,7 @@ beta = X_load[:,14]
 
 X_load =0
 
-X= jnp.append(d_hat_sim, jnp.column_stack((m0,alpha,beta,log_mag_err, log_c_err,log_x_err,cov_m_c,cov_m_x,cov_c_x)),axis=1)
+X= jnp.append(d_hat_sim, jnp.column_stack((m0,alpha,beta,log_mag_err, log_c_err,log_x_err,cov_m_c,cov_m_x,cov_c_x,z_hel)),axis=1)
 #X= jnp.append(d_hat_sim, jnp.column_stack((m0,alpha,beta,log_mag_err, log_c_err,log_x_err)),axis=1)
 X =jax.random.permutation(key,X, axis=0, independent=False)
 
@@ -444,20 +443,14 @@ else:
     big_losses = {"train": [], "val": [],"lr":[]}
 
 
-for _ in range(1):
-    opt_key,___= jr.split(opt_key)
-    flow, losses,params,opt_state,counter = fit_to_data(
-        key=key,
-        dist=flow,
-        max_patience=args.max_pat,
-        max_epochs=args.epochs,
-        batch_size=args.batch_size,params=params,opt_state=opt_state,opt_key=opt_key,lr_schedule=lr_schedule,counter=counter,big_losses=big_losses)
-    
-  
-import subprocess
-if args.make_slurm:
-    if args.save_all==False:
-        cmd_ = "python3 make_slurm.py --name="+name+" --nn_width="+str(args.nn_width)+' --nn_depth='+str(args.nn_depth)+' --no_flows='+str(args.no_flows)
-        subprocess.run(cmd_, shell=True)
 
+opt_key,___= jr.split(opt_key)
+flow, losses,params,opt_state,counter = fit_to_data(
+    key=key,
+    dist=flow,
+    max_patience=args.max_pat,
+    max_epochs=args.epochs,
+    batch_size=args.batch_size,params=params,opt_state=opt_state,opt_key=opt_key,lr_schedule=lr_schedule,counter=counter,big_losses=big_losses)
+
+  
 

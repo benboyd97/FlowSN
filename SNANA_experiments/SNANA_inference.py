@@ -228,15 +228,14 @@ from numpyro.distributions.util import is_prng_key, promote_shapes, validate_sam
 class FlowSNP3D(Distribution):
     arg_constraints = {"m0": constraints.real,
     "alpha": constraints.real,"beta": constraints.real, "W_mm": constraints.real,"W_cc": constraints.real,"W_xx": constraints.real,
-     "W_mc": constraints.real,"W_mx": constraints.real,"W_cx": constraints.real,"z_hel":constraints.real,
-    "m_cut": constraints.real, "sigma_cut": constraints.real,"a":constraints.real,"b":constraints.real}
+     "W_mc": constraints.real,"W_mx": constraints.real,"W_cx": constraints.real,"z_hel":constraints.real}
 
     support = constraints.real
     reparametrized_params = ["m0", "alpha","beta","W_mm","W_cc","W_xx","W_mc","W_mx","W_cx","z_hel","m_cut", "sigma_cut","a","b"]
 
-    def __init__(self,m0,alpha,beta,W_mm,W_cc,W_xx,W_mc,W_mx,W_cx,z_hel,m_cut,sigma_cut,a,b,*,validate_args=False,res=1000):
+    def __init__(self,m0,alpha,beta,W_mm,W_cc,W_xx,W_mc,W_mx,W_cx,z_hel,*,validate_args=False,res=1000):
 
-        self.m0,self.alpha,self.beta,self.W_mm,self.W_cc,self.W_xx,self.W_mc,self.W_mx,self.W_cx,self.z_hel,self.m_cut,self.sigma_cut,self.a,self.b=(m0,alpha,beta,W_mm,W_cc,W_xx,W_mc,W_mx,W_cx,z_hel,m_cut,sigma_cut,a,b)
+        self.m0,self.alpha,self.beta,self.W_mm,self.W_cc,self.W_xx,self.W_mc,self.W_mx,self.W_cx,self.z_hel=(m0,alpha,beta,W_mm,W_cc,W_xx,W_mc,W_mx,W_cx,z_hel)
         
   
         super(FlowSNP3D, self).__init__(
@@ -269,8 +268,6 @@ class FlowSNP3D(Distribution):
     @jax.jit
     def log_prob(self, value):
         
-        no_samps = 1
-        no_obj = value.size
 
         X=jnp.append(value,jnp.column_stack((self.m0,self.alpha,self.beta,safe_log(self.W_mm**0.5),safe_log(self.W_cc**0.5),safe_log(self.W_xx**0.5),self.W_mc,self.W_mx,self.W_cx,self.z_hel)),axis=1)
 
@@ -320,7 +317,7 @@ from numpyro.distributions.truncated import TruncatedDistribution
 
 
 
-def flow_model(z_s,z_s_err,z_hel,data_s=None,data_err_s=None,h=H0/100,m_cut=24,sigma_cut=0.25,a=-0.1,b=-1,sigma_pec=300,wCDM=True, R_cmb_obs= R_cmb_obs,sigma_Rcmb=sigma_Rcmb):
+def flow_model(z_s,z_s_err,z_hel,data_s=None,data_err_s=None,h=H0/100,m_cut=24,sigma_pec=300,wCDM=True, R_cmb_obs= R_cmb_obs,sigma_Rcmb=sigma_Rcmb):
 
  
     if wCDM:
@@ -420,7 +417,7 @@ if cmb_bool:
 if mismatch:
     name+='_mismatch'
 import os
-directory = 'shift_SNANA_chains_'+name
+directory = 'SNANA_chains_'+name
 
 
 files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
@@ -505,6 +502,6 @@ for add in these:
 
 
     if wCDM_bool:
-        np.savez('shift_SNANA_chains_'+name+'/wflow_SNANA'+str(rep_)+'.npz',**save_dict)
+        np.savez('SNANA_chains_'+name+'/wflow_SNANA'+str(rep_)+'.npz',**save_dict)
     else:
-        np.savez('shift_SNANA_chains_'+name+'/lflow_SNANA'+str(rep_)+'.npz',**save_dict)
+        np.savez('SNANA_chains_'+name+'/lflow_SNANA'+str(rep_)+'.npz',**save_dict)

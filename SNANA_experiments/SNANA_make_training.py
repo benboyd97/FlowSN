@@ -17,7 +17,7 @@ def cuts(df):
     return df
 
 for i in range(3):
-    dir_ = 'shift_sims/TRAINING'+str(i)+'.FITRES'
+    dir_ = 'SNANA_sims/TRAINING'+str(i)+'.FITRES'
     
     if i ==0:
         df  =cuts(pd.read_csv(dir_, comment="#", sep='\s+').sample(frac=1))[:3000000]
@@ -26,7 +26,7 @@ for i in range(3):
     print(len(df))
 
     
-dir_ = 'shift_sims/TRAINING_FLAT.FITRES'
+dir_ = 'SNANA_sims/TRAINING_FLAT.FITRES'
 df = pd.concat((df,cuts(pd.read_csv(dir_, comment="#", sep='\s+').sample(frac=1))[:1000000])).sample(frac=1)
 print(len(df))
 
@@ -48,4 +48,4 @@ train_arr = np.append(train_arr,np.array(df['SIM_DLMAG']+df['SIM_MUSHIFT']-19.36
 train_arr = np.append(train_arr,np.array(-df['SIM_alpha']).reshape(-1,1),axis=1)
 train_arr = np.append(train_arr,np.array(df['SIM_beta']).reshape(-1,1),axis=1)
 
-np.save('SNANA_shift_training_set.npy',train_arr)
+np.save('SNANA_training_set.npy',train_arr)
